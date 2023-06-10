@@ -1,49 +1,49 @@
-local api = require "luci.model.cbi.passwall2.api.api"
+local api = require "luci.passwall2.api"
 
 local ss_encrypt_method_list = {
-    "rc4-md5", "aes-128-cfb", "aes-192-cfb", "aes-256-cfb", "aes-128-ctr",
-    "aes-192-ctr", "aes-256-ctr", "bf-cfb", "camellia-128-cfb",
-    "camellia-192-cfb", "camellia-256-cfb", "salsa20", "chacha20",
-    "chacha20-ietf", -- aead
-    "aes-128-gcm", "aes-192-gcm", "aes-256-gcm", "chacha20-ietf-poly1305",
-    "xchacha20-ietf-poly1305"
+	"rc4-md5", "aes-128-cfb", "aes-192-cfb", "aes-256-cfb", "aes-128-ctr",
+	"aes-192-ctr", "aes-256-ctr", "bf-cfb", "camellia-128-cfb",
+	"camellia-192-cfb", "camellia-256-cfb", "salsa20", "chacha20",
+	"chacha20-ietf", -- aead
+	"aes-128-gcm", "aes-192-gcm", "aes-256-gcm", "chacha20-ietf-poly1305",
+	"xchacha20-ietf-poly1305"
 }
 
 local ss_rust_encrypt_method_list = {
-    "plain", "none",
-    "aes-128-gcm", "aes-256-gcm", "chacha20-ietf-poly1305",
-    "2022-blake3-aes-128-gcm","2022-blake3-aes-256-gcm","2022-blake3-chacha8-poly1305","2022-blake3-chacha20-poly1305"
+	"plain", "none",
+	"aes-128-gcm", "aes-256-gcm", "chacha20-ietf-poly1305",
+	"2022-blake3-aes-128-gcm", "2022-blake3-aes-256-gcm", "2022-blake3-chacha8-poly1305", "2022-blake3-chacha20-poly1305"
 }
 
 local ssr_encrypt_method_list = {
-    "none", "table", "rc2-cfb", "rc4", "rc4-md5", "rc4-md5-6", "aes-128-cfb",
-    "aes-192-cfb", "aes-256-cfb", "aes-128-ctr", "aes-192-ctr", "aes-256-ctr",
-    "bf-cfb", "camellia-128-cfb", "camellia-192-cfb", "camellia-256-cfb",
-    "cast5-cfb", "des-cfb", "idea-cfb", "seed-cfb", "salsa20", "chacha20",
-    "chacha20-ietf"
+	"none", "table", "rc2-cfb", "rc4", "rc4-md5", "rc4-md5-6", "aes-128-cfb",
+	"aes-192-cfb", "aes-256-cfb", "aes-128-ctr", "aes-192-ctr", "aes-256-ctr",
+	"bf-cfb", "camellia-128-cfb", "camellia-192-cfb", "camellia-256-cfb",
+	"cast5-cfb", "des-cfb", "idea-cfb", "seed-cfb", "salsa20", "chacha20",
+	"chacha20-ietf"
 }
 
 local ssr_protocol_list = {
-    "origin", "verify_simple", "verify_deflate", "verify_sha1", "auth_simple",
-    "auth_sha1", "auth_sha1_v2", "auth_sha1_v4", "auth_aes128_md5",
-    "auth_aes128_sha1", "auth_chain_a", "auth_chain_b", "auth_chain_c",
-    "auth_chain_d", "auth_chain_e", "auth_chain_f"
+	"origin", "verify_simple", "verify_deflate", "verify_sha1", "auth_simple",
+	"auth_sha1", "auth_sha1_v2", "auth_sha1_v4", "auth_aes128_md5",
+	"auth_aes128_sha1", "auth_chain_a", "auth_chain_b", "auth_chain_c",
+	"auth_chain_d", "auth_chain_e", "auth_chain_f"
 }
 local ssr_obfs_list = {
-    "plain", "http_simple", "http_post", "random_head", "tls_simple",
-    "tls1.0_session_auth", "tls1.2_ticket_auth"
+	"plain", "http_simple", "http_post", "random_head", "tls_simple",
+	"tls1.0_session_auth", "tls1.2_ticket_auth"
 }
 
 local v_ss_encrypt_method_list = {
-    "aes-128-gcm", "aes-256-gcm", "chacha20-poly1305"
+	"aes-128-gcm", "aes-256-gcm", "chacha20-poly1305"
 }
 
 local x_ss_encrypt_method_list = {
-    "aes-128-gcm", "aes-256-gcm", "chacha20-poly1305", "xchacha20-poly1305", "2022-blake3-aes-128-gcm", "2022-blake3-aes-256-gcm", "2022-blake3-chacha20-poly1305"
+	"aes-128-gcm", "aes-256-gcm", "chacha20-poly1305", "xchacha20-poly1305", "2022-blake3-aes-128-gcm", "2022-blake3-aes-256-gcm", "2022-blake3-chacha20-poly1305"
 }
 
 local header_type_list = {
-    "none", "srtp", "utp", "wechat-video", "dtls", "wireguard"
+	"none", "srtp", "utp", "wechat-video", "dtls", "wireguard"
 }
 
 local encrypt_methods_ss_aead = {
@@ -69,25 +69,25 @@ remarks.rmempty = false
 
 type = s:option(ListValue, "type", translate("Type"))
 if api.is_finded("ss-server") then
-    type:value("SS", translate("Shadowsocks"))
+	type:value("SS", translate("Shadowsocks"))
 end
 if api.is_finded("ssserver") then
-    type:value("SS-Rust", translate("Shadowsocks Rust"))
+	type:value("SS-Rust", translate("Shadowsocks Rust"))
 end
 if api.is_finded("ssr-server") then
-    type:value("SSR", translate("ShadowsocksR"))
+	type:value("SSR", translate("ShadowsocksR"))
 end
 if api.is_finded("v2ray") then
-    type:value("V2ray", translate("V2ray"))
+	type:value("V2ray", translate("V2ray"))
 end
 if api.is_finded("xray") then
-    type:value("Xray", translate("Xray"))
+	type:value("Xray", translate("Xray"))
 end
 if api.is_finded("brook") then
-    type:value("Brook", translate("Brook"))
+	type:value("Brook", translate("Brook"))
 end
 if api.is_finded("hysteria") then
-    type:value("Hysteria", translate("Hysteria"))
+	type:value("Hysteria", translate("Hysteria"))
 end
 
 protocol = s:option(ListValue, "protocol", translate("Protocol"))
@@ -123,14 +123,14 @@ port.rmempty = false
 
 auth = s:option(Flag, "auth", translate("Auth"))
 auth.validate = function(self, value, t)
-    if value and value == "1" then
-        local user_v = username:formvalue(t) or ""
-        local pass_v = password:formvalue(t) or ""
-        if user_v == "" or pass_v == "" then
-            return nil, translate("Username and Password must be used together!")
-        end
-    end
-    return value
+	if value and value == "1" then
+		local user_v = username:formvalue(t) or ""
+		local pass_v = password:formvalue(t) or ""
+		if user_v == "" or pass_v == "" then
+			return nil, translate("Username and Password must be used together!")
+		end
+	end
+	return value
 end
 auth:depends({ type = "V2ray", protocol = "socks" })
 auth:depends({ type = "V2ray", protocol = "http" })
@@ -328,7 +328,7 @@ udp_forward:depends({ type = "Xray", protocol = "socks" })
 
 uuid = s:option(DynamicList, "uuid", translate("ID") .. "/" .. translate("Password"))
 for i = 1, 3 do
-    uuid:value(api.gen_uuid(1))
+	uuid:value(api.gen_uuid(1))
 end
 uuid:depends({ type = "V2ray", protocol = "vmess" })
 uuid:depends({ type = "V2ray", protocol = "vless" })
@@ -340,17 +340,17 @@ uuid:depends({ type = "Xray", protocol = "trojan" })
 tls = s:option(Flag, "tls", translate("TLS"))
 tls.default = 0
 tls.validate = function(self, value, t)
-    if value then
-        local type = type:formvalue(t) or ""
-        if value == "1" then
-            local ca = tls_certificateFile:formvalue(t) or ""
-            local key = tls_keyFile:formvalue(t) or ""
-            if ca == "" or key == "" then
-                return nil, translate("Public key and Private key path can not be empty!")
-            end
-        end
-        return value
-    end
+	if value then
+		local type = type:formvalue(t) or ""
+		if value == "1" then
+			local ca = tls_certificateFile:formvalue(t) or ""
+			local key = tls_keyFile:formvalue(t) or ""
+			if ca == "" or key == "" then
+				return nil, translate("Public key and Private key path can not be empty!")
+			end
+		end
+		return value
+	end
 end
 tls:depends({ type = "V2ray", protocol = "vmess" })
 tls:depends({ type = "V2ray", protocol = "vless" })
@@ -362,17 +362,6 @@ tls:depends({ type = "Xray", protocol = "vless" })
 tls:depends({ type = "Xray", protocol = "socks" })
 tls:depends({ type = "Xray", protocol = "shadowsocks" })
 tls:depends({ type = "Xray", protocol = "trojan" })
-
-xtls = s:option(Flag, "xtls", translate("XTLS"))
-xtls.default = 0
-xtls:depends({ type = "Xray", protocol = "vless", tls = true })
-xtls:depends({ type = "Xray", protocol = "trojan", tls = true })
-
-flow = s:option(Value, "flow", translate("flow"))
-flow.default = "xtls-rprx-direct"
-flow:value("xtls-rprx-origin")
-flow:value("xtls-rprx-direct")
-flow:depends("xtls", true)
 
 alpn = s:option(ListValue, "alpn", translate("alpn"))
 alpn.default = "h2,http/1.1"
@@ -386,14 +375,14 @@ alpn:depends({ type = "Xray", tls = true })
 
 tls_certificateFile = s:option(FileUpload, "tls_certificateFile", translate("Public key absolute path"), translate("as:") .. "/etc/ssl/fullchain.pem")
 tls_certificateFile.validate = function(self, value, t)
-    if value and value ~= "" then
-        if not nixio.fs.access(value) then
-            return nil, translate("Can't find this file!")
-        else
-            return value
-        end
-    end
-    return nil
+	if value and value ~= "" then
+		if not nixio.fs.access(value) then
+			return nil, translate("Can't find this file!")
+		else
+			return value
+		end
+	end
+	return nil
 end
 tls_certificateFile.default = "/etc/config/ssl/" .. arg[1] .. ".pem"
 tls_certificateFile:depends("tls", true)
@@ -401,14 +390,14 @@ tls_certificateFile:depends("type", "Hysteria")
 
 tls_keyFile = s:option(FileUpload, "tls_keyFile", translate("Private key absolute path"), translate("as:") .. "/etc/ssl/private.key")
 tls_keyFile.validate = function(self, value, t)
-    if value and value ~= "" then
-        if not nixio.fs.access(value) then
-            return nil, translate("Can't find this file!")
-        else
-            return value
-        end
-    end
-    return nil
+	if value and value ~= "" then
+		if not nixio.fs.access(value) then
+			return nil, translate("Can't find this file!")
+		else
+			return value
+		end
+	end
+	return nil
 end
 tls_keyFile.default = "/etc/config/ssl/" .. arg[1] .. ".key"
 tls_keyFile:depends("tls", true)
@@ -582,55 +571,50 @@ bind_local:depends("type", "Xray")
 
 accept_lan = s:option(Flag, "accept_lan", translate("Accept LAN Access"), translate("When selected, it can accessed lan , this will not be safe!"))
 accept_lan.default = "0"
-accept_lan:depends({ type = "V2ray", protocol = "vmess" })
-accept_lan:depends({ type = "V2ray", protocol = "vless" })
-accept_lan:depends({ type = "V2ray", protocol = "http" })
-accept_lan:depends({ type = "V2ray", protocol = "socks" })
-accept_lan:depends({ type = "V2ray", protocol = "shadowsocks" })
-accept_lan:depends({ type = "V2ray", protocol = "trojan" })
-accept_lan:depends({ type = "Xray", protocol = "vmess" })
-accept_lan:depends({ type = "Xray", protocol = "vless" })
-accept_lan:depends({ type = "Xray", protocol = "http" })
-accept_lan:depends({ type = "Xray", protocol = "socks" })
-accept_lan:depends({ type = "Xray", protocol = "shadowsocks" })
-accept_lan:depends({ type = "Xray", protocol = "trojan" })
+accept_lan:depends("type", "V2ray")
+accept_lan:depends("type", "Xray")
 
 local nodes_table = {}
 for k, e in ipairs(api.get_valid_nodes()) do
-    if e.node_type == "normal" and (e.type == "V2ray" or e.type == "Xray") then
-        nodes_table[#nodes_table + 1] = {
-            id = e[".name"],
-            remarks = e["remark"]
-        }
-    end
+	if e.node_type == "normal" and (e.type == "V2ray" or e.type == "Xray") then
+		nodes_table[#nodes_table + 1] = {
+			id = e[".name"],
+			remarks = e["remark"]
+		}
+	end
 end
 
-transit_node = s:option(ListValue, "transit_node", translate("transit node"))
-transit_node:value("nil", translate("Close"))
-transit_node:value("_socks", translate("Custom Socks"))
-transit_node:value("_http", translate("Custom HTTP"))
-for k, v in pairs(nodes_table) do transit_node:value(v.id, v.remarks) end
-transit_node.default = "nil"
-transit_node:depends("type", "V2ray")
-transit_node:depends("type", "Xray")
+outbound_node = s:option(ListValue, "outbound_node", translate("outbound node"))
+outbound_node:value("nil", translate("Close"))
+outbound_node:value("_socks", translate("Custom Socks"))
+outbound_node:value("_http", translate("Custom HTTP"))
+outbound_node:value("_iface", translate("Custom Interface") .. " (Only Support Xray)")
+for k, v in pairs(nodes_table) do outbound_node:value(v.id, v.remarks) end
+outbound_node.default = "nil"
+outbound_node:depends("type", "V2ray")
+outbound_node:depends("type", "Xray")
 
-transit_node_address = s:option(Value, "transit_node_address", translate("Address (Support Domain Name)"))
-transit_node_address:depends("transit_node", "_socks")
-transit_node_address:depends("transit_node", "_http")
+outbound_node_address = s:option(Value, "outbound_node_address", translate("Address (Support Domain Name)"))
+outbound_node_address:depends("outbound_node", "_socks")
+outbound_node_address:depends("outbound_node", "_http")
 
-transit_node_port = s:option(Value, "transit_node_port", translate("Port"))
-transit_node_port.datatype = "port"
-transit_node_port:depends("transit_node", "_socks")
-transit_node_port:depends("transit_node", "_http")
+outbound_node_port = s:option(Value, "outbound_node_port", translate("Port"))
+outbound_node_port.datatype = "port"
+outbound_node_port:depends("outbound_node", "_socks")
+outbound_node_port:depends("outbound_node", "_http")
 
-transit_node_username = s:option(Value, "transit_node_username", translate("Username"))
-transit_node_username:depends("transit_node", "_socks")
-transit_node_username:depends("transit_node", "_http")
+outbound_node_username = s:option(Value, "outbound_node_username", translate("Username"))
+outbound_node_username:depends("outbound_node", "_socks")
+outbound_node_username:depends("outbound_node", "_http")
 
-transit_node_password = s:option(Value, "transit_node_password", translate("Password"))
-transit_node_password.password = true
-transit_node_password:depends("transit_node", "_socks")
-transit_node_password:depends("transit_node", "_http")
+outbound_node_password = s:option(Value, "outbound_node_password", translate("Password"))
+outbound_node_password.password = true
+outbound_node_password:depends("outbound_node", "_socks")
+outbound_node_password:depends("outbound_node", "_http")
+
+outbound_node_iface = s:option(Value, "outbound_node_iface", translate("Interface"))
+outbound_node_iface.default = "eth1"
+outbound_node_iface:depends("outbound_node", "_iface")
 
 log = s:option(Flag, "log", translate("Log"))
 log.default = "1"
